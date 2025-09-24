@@ -42,7 +42,7 @@ super_values = []
 differences = []
 
 property_val = initial_property
-super_val = stamp_duty   # super starts with stamp duty (opportunity cost)
+super_val = stamp_duty   # Year 0: only stamp duty goes into super
 loan_balance = initial_property  # assume 100% loan for simplicity
 
 # annuity repayment formula (annual mortgage repayment)
@@ -71,8 +71,13 @@ for year in range(1, years + 1):
     if net_cash_out < 0:
         net_cash_out = 0
 
-    # super balance grows with reinvested cash outflow
-    super_val = super_val * (1 + super_growth) + net_cash_out
+    # super balance
+    if year == 1:
+        # Year 1: grow from stamp duty, then add year 1 net cash outflow
+        super_val = super_val * (1 + super_growth) + net_cash_out
+    else:
+        # Year 2+: compound growth + net cash outflow
+        super_val = super_val * (1 + super_growth) + net_cash_out
 
     # difference between property equity and super
     difference = equity - super_val
